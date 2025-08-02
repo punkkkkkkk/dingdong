@@ -3,11 +3,11 @@ class Dingdong < Formula
   homepage "https://github.com/punkkkkkkk/dingdong"
   url "https://github.com/punkkkkkkk/dingdong/archive/refs/heads/main.zip"
   version "1.0.0"
-  sha256 "REPLACE_THIS_WITH_REAL_SHA"  # You can get this via `shasum -a 256` on the zip
+  sha256 "16a47b24f7ea5a58af9a7783f3aff81e3d1581da333368252c458aa14624175e"
 
   def install
     bin.install "prank.sh"
-    bin.install "image.jpg"
+    bin.install "payload.jpg"
   end
 
   def post_install
