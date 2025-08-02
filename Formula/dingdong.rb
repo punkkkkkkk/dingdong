@@ -3,7 +3,7 @@ class Dingdong < Formula
   homepage "https://github.com/punkkkkkkk/dingdong"
   url "https://github.com/punkkkkkkk/dingdong/archive/refs/heads/main.zip"
   version "1.0.0"
-  sha256 "16a47b24f7ea5a58af9a7783f3aff81e3d1581da333368252c458aa14624175e" 
+  sha256 "e514d16d8d94a88fbd614479afb097c64fc974b0e4fa401f5f090d722c434771" 
 
 
   def install
