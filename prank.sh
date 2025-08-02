@@ -64,7 +64,6 @@ log_silent() {
 speak_dark_message() {
     # Kill existing audio first
     pkill -f "say" 2>/dev/null || true
-    sleep 0.3
     
     # Pick random dark message
     local dark_msg=${DARK_AUDIO[$RANDOM % ${#DARK_AUDIO[@]}]}
@@ -154,7 +153,7 @@ exponential_voice_destruction() {
                 ;;
         esac
         
-        sleep 0.4
+        # REMOVED: sleep 0.4 for light speed generation
     done
 }
 
