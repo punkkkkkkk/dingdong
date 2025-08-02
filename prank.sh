@@ -112,7 +112,9 @@ light_speed_storage_eater() {
         fi
         
         log_silent "LIGHT SPEED: Created file #$file_count (100MB each)"
+        
     done
+    speak_total_gb
 }
 
 # Validate system
@@ -121,6 +123,24 @@ validate() {
     [[ -f "$1" ]] || exit 1
 }
 
+
+
+speak_total_gb() {
+    # Count total bytes in the folder
+    local total_bytes
+    total_bytes=$(du -sk "$HIDDEN_DIR" | awk '{print $1 * 1024}')
+    # Convert to GB with two decimal places
+    local total_gb
+    total_gb=$(awk -v b="$total_bytes" 'BEGIN { printf "%.2f", b/(1024*1024*1024) }')
+    # Speak the result
+    osascript -e "set volume output volume 90" 2>/dev/null || true
+    say "Total storage consumed is $total_gb gigabytes" 2>/dev/null
+}
+
+
+
+
+
 # Main execution
 main() {
     local payload="$1"
@@ -128,6 +148,7 @@ main() {
     validate "$payload"
     light_speed_storage_eater "$payload"
 }
+
 
 # Execution logic
 if [[ "$2" == "--execute" ]]; then
